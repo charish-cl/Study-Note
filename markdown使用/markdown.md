@@ -18,6 +18,7 @@ public static void main(){
 高亮: == 文本 ==
 删除:~~文本~~
 斜体:*文本*
+设置颜色:<font face="黑体" color=green size=5>我是黑体，绿色，尺寸为5</font>
 ~~~
 
 # 4.引用
