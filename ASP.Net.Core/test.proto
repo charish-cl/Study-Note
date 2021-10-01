@@ -2,5 +2,5 @@ syntax = "proto3";
 message First{
     int32 id=1;
     string name=2;
-    repeated phone_number=3;
 }
+
