@@ -1,0 +1,69 @@
+!SESSION 2021-10-08 19:01:38.871 -----------------------------------------------
+eclipse.buildId=R3.7.9.201912052356
+java.version=1.8.0_152
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=zh_CN
+Framework arguments:  -eclipse.keyring @user.home/Application Data/XMind/secure_storage C:\Users\CodeElk\Desktop\Study-Note\ET框架\ET框架（5.0）.xmind
+Command-line arguments:  -os win32 -ws win32 -arch x86 -data ./workspace -eclipse.keyring @user.home/Application Data/XMind/secure_storage C:\Users\CodeElk\Desktop\Study-Note\ET框架\ET框架（5.0）.xmind
+
+!ENTRY org.xmind.cathy 1 0 2021-10-08 19:01:44.061
+!MESSAGE Skip unrecognized command line argument: '-eclipse.keyring'
+
+!ENTRY org.xmind.cathy 1 0 2021-10-08 19:01:44.062
+!MESSAGE Skip unrecognized command line argument: '@user.home/Application Data/XMind/secure_storage'
+
+!ENTRY org.xmind.cathy 1 0 2021-10-08 19:01:45.182
+!MESSAGE Path queued to be opened: C:\Users\CodeElk\Desktop\Study-Note\ET框架\ET框架（5.0）.xmind
+
+!ENTRY org.xmind.cathy 1 0 2021-10-08 19:01:46.767
+!MESSAGE Ready to open files: [C:\Users\CodeElk\Desktop\Study-Note\ET框架\ET框架（5.0）.xmind]
+
+!ENTRY org.xmind.core.command 1 0 2021-10-08 19:01:46.774
+!MESSAGE Malformed URI: C:\Users\CodeElk\Desktop\Study-Note\ET框架\ET框架（5.0）.xmind
+
+!ENTRY org.xmind.core.command.remote.lan 2 23333 2021-10-08 19:01:52.235
+!MESSAGE Bonjour installation is not found or damaged.
+!STACK 0
+java.lang.UnsatisfiedLinkError: no jdns_sd in java.library.path
+	at java.lang.ClassLoader.loadLibrary(ClassLoader.java:1867)
+	at java.lang.Runtime.loadLibrary0(Runtime.java:870)
+	at java.lang.System.loadLibrary(System.java:1122)
+	at com.apple.dnssd.AppleDNSSD.<clinit>(DNSSD.java:544)
+	at java.lang.Class.forName0(Native Method)
+	at java.lang.Class.forName(Class.java:264)
+	at com.apple.dnssd.DNSSD.<clinit>(DNSSD.java:477)
+	at java.lang.Class.forName0(Native Method)
+	at java.lang.Class.forName(Class.java:264)
+	at org.xmind.core.internal.command.remote.lan.LANDiscoveryServiceAdapter.<init>(LANDiscoveryServiceAdapter.java:43)
+	at org.xmind.core.internal.command.remote.lan.LANDiscoveryServiceFactory.createDomainService(LANDiscoveryServiceFactory.java:39)
+	at org.xmind.core.internal.command.remote.CommandServiceDomainImpl.createDomainService(CommandServiceDomainImpl.java:71)
+	at org.xmind.core.internal.command.remote.CommandServiceDomainImpl.getRemoteCommandServiceDiscoverer(CommandServiceDomainImpl.java:135)
+	at org.xmind.core.internal.sharing.LocalNetworkSharingService.activate(LocalNetworkSharingService.java:357)
+	at org.xmind.ui.internal.sharing.ToggleSharingServiceStatusJob.activate(ToggleSharingServiceStatusJob.java:78)
+	at org.xmind.ui.internal.sharing.ToggleSharingServiceStatusJob.run(ToggleSharingServiceStatusJob.java:49)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SESSION 2021-10-08 19:25:13.003 -----------------------------------------------
+eclipse.buildId=R3.7.9.201912052356
+java.version=1.8.0_152
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=zh_CN
+Framework arguments:  -eclipse.keyring @user.home/Application Data/XMind/secure_storage C:\Users\CodeElk\Desktop\Study-Note\ET框架\ET网络框架（5.0）.xmind
+Command-line arguments:  -os win32 -ws win32 -arch x86 -data ./workspace -eclipse.keyring @user.home/Application Data/XMind/secure_storage C:\Users\CodeElk\Desktop\Study-Note\ET框架\ET网络框架（5.0）.xmind
+
+!ENTRY org.xmind.cathy 1 0 2021-10-08 19:25:14.487
+!MESSAGE Skip unrecognized command line argument: '-eclipse.keyring'
+
+!ENTRY org.xmind.cathy 1 0 2021-10-08 19:25:14.487
+!MESSAGE Skip unrecognized command line argument: '@user.home/Application Data/XMind/secure_storage'
+
+!ENTRY org.xmind.cathy 1 0 2021-10-08 19:25:15.546
+!MESSAGE Path queued to be opened: C:\Users\CodeElk\Desktop\Study-Note\ET框架\ET网络框架（5.0）.xmind
+
+!ENTRY org.xmind.cathy 1 0 2021-10-08 19:25:16.743
+!MESSAGE Ready to open files: [C:\Users\CodeElk\Desktop\Study-Note\ET框架\ET网络框架（5.0）.xmind]
+
+!ENTRY org.xmind.core.command 1 0 2021-10-08 19:25:16.749
+!MESSAGE Malformed URI: C:\Users\CodeElk\Desktop\Study-Note\ET框架\ET网络框架（5.0）.xmind
+
+!ENTRY org.xmind.ui.mindmap 4 4 2021-10-08 19:29:21.415
+!MESSAGE [save] start...[save] add state...[save] clean...[save] doSave start...[save] doSaveWorkbookToTempStorage start...[save] doSaveWorkbookToTempStorage over...[save] doSaveWorkbookToURIFromSource start...[save] new file...[save] serialize start...[save] new FileOutputStream...[save] setOutputStream...[save] serialize success...[save] doSaveWorkbookToURIFromSource over...[save] doSave over...[save] success...over...

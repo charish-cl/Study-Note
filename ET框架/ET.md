@@ -67,6 +67,21 @@ Game.Hotfix.LoadHotfixAssembly();//加载热更代码入口,每次更新HotFix�
 HotFix不能存数据,热重载造成数据丢失,存放热更代码逻辑
 ```
 
+
+
+### Model层和Hotfix层交互
+
+1. 关于跨域交互：Model2Hotfix 使用事件，Hotfix2Moedel使用引用。
+2. 关于跨层交互：View2Data使用引用，Data2View使用引用。（因为是在同一组件内，所以互相都有对方的引用。 ）
+3. 服务端ETHotfix可以无限制地使用ETModel的类或函数，只需在头部位置“使用ETModel”即可。
+   ETModel不能使用ETHotfix的类或函数，所以您需要使用[Event(EventIdType.xxxx)]来告诉ETHotfix该做什么。
+
+### 热更相关
+
+1. 控制台输入reload,这样就可以热更
+2. 热更后update走新的逻辑,协程没结束的会走旧的,结束重新开协程会走新的
+3. 服务器端与客户端不同。服务器端的ETHotfix只有逻辑，没有数据。数据被放在ETModel中，所以服务器端可以在运行时重新加载修复DLL。客户端热更新是因为ios不允许Unity加载DLL。它需要使用一个ILRuntime库来执行ETHotfix，所以客户端热更新需要用数据和逻辑重新启动。
+
 ## ECS
 
 ##### 入口
@@ -74,6 +89,69 @@ HotFix不能存数据,热重载造成数据丢失,存放热更代码逻辑
     1.	OneThreadSynchronizationContext.Instance.Update();
     2.	Game.EventSystem.Update();
 
+##### 理解
+
+ecs有一个演进过程的
+
+**第一种，可以这样：**
+
+**entity:** 纯id属性，无数据状态无逻辑，他只是一个具有生命周期的对象，添加给他的组件都跟随他的生命周期
+
+**componet:** 有数据状态，无逻辑
+
+**System:** 有逻辑无状态
+
+这就是你熟悉的，也是unity中的ecs的模型。
+
+**第二种，也可以这样：**
+
+**entity:** 有重要的数据状态，也可以无数据状态，无逻辑，也是一个具有生命周期的对象，添加给他的组件都跟随他的生命周期
+
+**componet:** 有数据状态，有标准的逻辑，也可以无逻辑
+
+**System:** 有逻辑无状态，而且对同样的组件，在不同系统可以有不同的逻辑
+
+第一种适合前端开发，第二种适合后端开发。
+
+————————————————————————————
+
+第一种这么做，对于前端来说意义是明显的，因为都与场景，游戏物体资源，更复杂的模块（模型网格，物理，网络，材质，渲染，灯光）密切相关，且运行在一个客户程序中。
+
+而在服务端，是不存在前端游戏中的场景与游戏物体资源的，不同的功能模块又可以在不同的物理主机各自独立的程序中运行，而且只是其中部分需要在服务端计算和存放的纯数据状态操作。
+
+这样就能更灵活一些，你可以像第一种一样开发。也可以在必要的时候：
+
+- 实体中可以有重要的数据状态，
+- 组件中可以有标准的逻辑，
+- 服务端分布式开发的情况下，不同的系统如realm,gate,map可以分别在不同的物理主机系统下运行，这样还能面向同样的组件的system，可以是不同的逻辑。
+
+————————————————————————————
+
+这样看来，不论第一种还是第二种，其核心思想是一样的：
+
+entity是生命周期对象
+
+组件添加给实体，跟随实体生命周期
+
+逻辑在System中面向组件，是无状态的
+
+**区别只是：在服务端实体中可以有一些重要的数据状态，组件中可以有一些标准逻辑。**
+
+
+
+
+
+而为什么要有ECS这种设计，我觉得风云这篇文章讲得很好：https://blog.codingnow.com/2017/06/overwatch_ecs.html
+
+我相信很多做过游戏开发的程序都会有这种体会。因为游戏对象其实是由很多部分聚合而成，引擎的功能模块很多，不同的模块关注的部分往往互不相关。比如渲染模块并不关心网络连接、游戏业务处理不关心玩家的名字、用的什么模型。从自然意义上说，把游戏对象的属性聚合在一起成为一个对象是很自然的事情，对于这个对象的生命期管理也是最合理的方式。但对于不同的业务模块来说，针对聚合在一起的对象做处理，把处理方法绑定在对象身上就不那么自然了。这会导致模块的内聚性很差、模块间也会出现不必要的耦合。
+
+我觉得守望先锋之所以要设计一个新的框架来解决这个问题，是因为他们面对的问题复杂度可能到了一个更高的程度：比如如何用预测技术做更准确的网络同步。网络同步只关心很少的对象属性，没必要在设计同步模块时牵扯过多不必要的东西。为了准确，需要让客户端和服务器跑同一套代码，而服务器并不需要做显示，所以要比较容易的去掉显示系统；客户端和服务器也不完全是同样的逻辑，需要共享一部分系统，而在另一部分上根据分别实现……
+
+总的来说、需要想一个办法拆分复杂问题，把问题聚焦到一个较小的集合，提高每个子任务的内聚性。
+
+**ECS 的 E ，也就是 Entity ，可以说就是传统引擎中的 Game Object 。但在这个系统下，它仅仅是 C/Component 的组合。它的意义在于生命期管理，这里是用 32bit ID 而不是指针来表示的，另外附着了渲染用到的资源 ID 。因为仅负责生命期管理，而不设计调用其上的方法，用整数 ID 更健壮。整数 ID 更容易指代一个无效的对象，而指针就很难做到。**
+
+**C 和 S 是这个框架的核心。System 系统，也就是我上面提到的模块。对于游戏来说，每个模块应该专注于干好一件事，而每件事要么是作用于游戏世界里同类的一组对象的每单个个体的，要么是关心这类对象的某种特定的交互行为。比如碰撞系统，就只关心对象的体积和位置，不关心对象的名字，连接状态，音效、敌对关系等。它也不一定关心游戏世界中的所有对象，比如关心那些不参与碰撞的装饰物。所以对每个子系统来说，筛选出系统关心的对象子集以及只给它展示它所关心的数据就是框架的责任了。**
 
 
 
@@ -209,6 +287,44 @@ public string Result;
 
 * ET是通过Channel （通信通道）实时同步消息的，一个信道是一个用户的实时连接，搭配一个session。Channel实时在同步，拿到消息后由session分发消息（有时候是直接返回给客户端，有时要转分发给Map、Gate），当然session也负责发起消息与请求。
 
+
+
+### Session
+
+```
+用来收发热更层的消息
+```
+
+属于服务端与客户端之间的消息类型，皆属于**OuterMessage**。（外部消息）
+
+3. 服务器与其他服务器对话的消息（属于内部消息**InnerMessage**，且是Actor消息）
+4. 需要返回结果（Actor RPC消息）
+5. 不需要返回结果（普通的Actor消息）
+
+
+
+### Actor消息
+
+```csharp
+public static void Broadcast(IActorMessage message)
+		{
+			Unit[] units = Game.Scene.GetComponent<UnitComponent>().GetAll();
+			ActorMessageSenderComponent actorLocationSenderComponent = Game.Scene.GetComponent<ActorMessageSenderComponent>();
+			foreach (Unit unit in units)
+			{
+				UnitGateComponent unitGateComponent = unit.GetComponent<UnitGateComponent>();
+				
+				if (unitGateComponent.IsDisconnect)
+				{
+					continue;
+				}
+				//根据指定的actorid发送actor消息
+				ActorMessageSender actorMessageSender = actorLocationSenderComponent.Get(unitGateComponent.GateSessionActorId);
+				actorMessageSender.Send(message);
+			}
+		}
+```
+
 ## 组件
 
 ### Global(场景中的Global组件)
@@ -238,3 +354,9 @@ if (this.GameObject != null && this.parent.GameObject != null)
 ### UnOrderMultiMap
 
 要想完全理解EventSystem，先要弄清楚ET里面的UnOrderMultiMap，这是个数据结构辅助类。专门用于管理某个类型对应的List。当然这个类，还带有重用功能，用于提升性能。
+
+## 资源加载
+
+1. ab包名字要以unity3d结尾
+2. 代码中名字对应prefab名字
+
